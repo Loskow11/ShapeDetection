@@ -26,24 +26,33 @@ def detect_shapes(image_path):
         x, y, w, h = cv2.boundingRect(approx)
         shape_name = "inconnu"
         
+        # init couleur par defaut
+        color = (0, 0, 0)
+
         # logique de classification basée sur le nombre de sommets
         vertices = len(approx)
 
         if vertices == 3:
             shape_name = "triangle"
+            # rouge pour les triangles
+            color = (0, 0, 255)
         
         elif vertices == 4:
             # calcul du ratio pour différencier carré et rectangle
             aspect_ratio = float(w) / h
             shape_name = "carre" if 0.95 <= aspect_ratio <= 1.05 else "rectangle"
+            # bleu pour les carres et rectangles
+            color = (255, 0, 0)
         
         elif vertices > 4:
             # on assume cercle pour les polygones complexes dans ce contexte
             shape_name = "cercle"
+            # jaune pour les cercles
+            color = (0, 255, 255)
 
-        # affichage final
-        cv2.drawContours(img, [approx], 0, (0, 255, 0), 2)
-        cv2.putText(img, shape_name, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+        # affichage final avec couleur dynamique
+        cv2.drawContours(img, [approx], 0, color, 2)
+        cv2.putText(img, shape_name, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
     cv2.imshow("resultat", img)
     cv2.waitKey(0)
